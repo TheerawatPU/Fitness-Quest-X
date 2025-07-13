@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Quest RPG</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background: #0a0e27;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 40, 200, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(40, 120, 200, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(200, 40, 120, 0.3) 0%, transparent 50%);
+            animation: bgAnimation 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes bgAnimation {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(120, 40, 200, 0.8), rgba(40, 120, 200, 0.8));
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.05) 10px,
+                rgba(255, 255, 255, 0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Character Section */
+        .character-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 30px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .character-card {
+            background: rgba(40, 44, 80, 0.8);
+            border: 2px solid #7828c8;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(120, 40, 200, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #7828c8, #2878c8);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(120, 40, 200, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .level-badge {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, #ffd700, #ffed4b);
+            color: #333;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .character-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #7828c8, #2878c8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .character-class {
+            color: #ffd700;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Stats */
+        .stats-container {
+            background: rgba(40, 44, 80, 0.8);
+            border: 2px solid #7828c8;
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            margin-bottom: 20px;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-icon {
+            font-size: 20px;
+        }
+
+        .stat-bar {
+            background: rgba(0, 0, 0, 0.5);
+            height: 25px;
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7828c8, #2878c8);
+            border-radius: 50px;
+            position: relative;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(120, 40, 200, 0.5);
+        }
+
+        .stat-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Today's Quest */
+        .quest-section {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .quest-header {
+            background: linear-gradient(135deg, rgba(120, 40, 200, 0.8), rgba(40, 120, 200, 0.8));
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: 0 5px 20px rgba(120, 40, 200, 0.3);
+        }
+
+        .quest-container {
+            background: rgba(40, 44, 80, 0.8);
+            border: 2px solid #7828c8;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .date-display {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .exercise-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .exercise-item {
+            background: rgba(20, 24, 60, 0.8);
+            border: 2px solid #2878c8;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(120, 40, 200, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .exercise-item:hover::before {
+            left: 100%;
+        }
+
+        .exercise-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(120, 40, 200, 0.3);
+            border-color: #7828c8;
+        }
+
+        .exercise-item.completed {
+            background: rgba(40, 200, 120, 0.2);
+            border-color: #28c876;
+        }
+
+        .exercise-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #7828c8;
+            border-radius: 8px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .exercise-item.completed .exercise-checkbox {
+            background: #28c876;
+            border-color: #28c876;
+        }
+
+        .exercise-item.completed .exercise-checkbox::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .exercise-info {
+            flex: 1;
+        }
+
+        .exercise-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .exercise-details {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .exercise-exp {
+            background: #ffd700;
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Rest Day */
+        .rest-day {
+            text-align: center;
+            padding: 60px;
+            background: rgba(40, 44, 80, 0.8);
+            border: 2px solid #7828c8;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .rest-day-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .rest-day-text {
+            font-size: 24px;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        /* Progress Overview */
+        .progress-section {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .progress-card {
+            background: rgba(40, 44, 80, 0.8);
+            border: 2px solid #7828c8;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .progress-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(120, 40, 200, 0.3);
+        }
+
+        .progress-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .progress-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .progress-percentage {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #7828c8, #2878c8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Achievements */
+        .achievements-section {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-badge {
+            background: rgba(40, 44, 80, 0.8);
+            border: 2px solid #2878c8;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-badge.unlocked {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .achievement-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(120, 40, 200, 0.3);
+        }
+
+        .achievement-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        .achievement-badge.unlocked .achievement-icon {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+
+        /* Level Up Modal */
+        .level-up-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .level-up-content {
+            background: linear-gradient(135deg, rgba(120, 40, 200, 0.9), rgba(40, 120, 200, 0.9));
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            animation: levelUpAnimation 0.5s ease;
+            box-shadow: 0 20px 60px rgba(120, 40, 200, 0.5);
+        }
+
+        @keyframes levelUpAnimation {
+            0% { transform: scale(0) rotate(180deg); }
+            50% { transform: scale(1.2) rotate(360deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .level-up-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .level-up-message {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .level-up-reward {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .close-modal {
+            background: #ffd700;
+            color: #333;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .close-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .character-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style="text-align: center; font-size: 36px; position: relative; z-index: 1;">
+            ⚔️ FITNESS QUEST RPG ⚔️
+        </h1>
+    </div>
+
+    <!-- Character Section -->
+    <div class="character-section">
+        <div class="character-card">
+            <div class="character-avatar">
+                💪
+                <div class="level-badge" id="levelBadge">1</div>
+            </div>
+            <div class="character-name">นักรบร่างกาย</div>
+            <div class="character-class">Muscle Warrior</div>
+            <div style="font-size: 14px; color: #a0a0a0;">
+                EXP: <span id="currentExp">0</span>/<span id="maxExp">100</span>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <h3 style="text-align: center; margin-bottom: 25px; font-size: 24px;">📊 สถานะพลัง</h3>
+            
+            <div class="stat-item">
+                <div class="stat-header">
+                    <div class="stat-name">
+                        <span class="stat-icon">💪</span>
+                        <span>กำลังหน้าอก (Chest Power)</span>
+                    </div>
+                    <span id="chestStat">0/100</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="chestBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-header">
+                    <div class="stat-name">
+                        <span class="stat-icon">🔥</span>
+                        <span>พลังหน้าท้อง (Core Power)</span>
+                    </div>
+                    <span id="coreStat">0/100</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="coreBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-header">
+                    <div class="stat-name">
+                        <span class="stat-icon">⚡</span>
+                        <span>พลังแขน (Arm Power)</span>
+                    </div>
+                    <span id="armStat">0/100</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="armBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-header">
+                    <div class="stat-name">
+                        <span class="stat-icon">⭐</span>
+                        <span>พลังรวม (Total Power)</span>
+                    </div>
+                    <span id="totalStat">0/300</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="totalBar" style="width: 0%; background: linear-gradient(90deg, #ffd700, #ffed4b);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Quest -->
+    <div class="quest-section">
+        <div class="quest-header">
+            🗡️ ภารกิจประจำวัน (Daily Quest)
+        </div>
+        <div class="quest-container">
+            <div class="date-display" id="dateDisplay">วันจันทร์ที่ 1 มกราคม 2568</div>
+            <div id="exerciseList" class="exercise-list">
+                <!-- Exercises will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Overview -->
+    <div class="progress-section">
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 28px;">📈 ความคืบหน้าการฝึก</h2>
+        <div class="progress-grid">
+            <div class="progress-card">
+                <div class="progress-icon">💪</div>
+                <div class="progress-title">หน้าอก</div>
+                <div class="progress-percentage" id="chestProgress">0%</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-icon">🔥</div>
+                <div class="progress-title">หน้าท้อง</div>
+                <div class="progress-percentage" id="coreProgress">0%</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-icon">⚡</div>
+                <div class="progress-title">แขน</div>
+                <div class="progress-percentage" id="armProgress">0%</div>
+            </div>
+            <div class="progress-card">
+                <div class="progress-icon">🏆</div>
+                <div class="progress-title">รวม</div>
+                <div class="progress-percentage" id="totalProgress">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="achievements-section">
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🏅 ความสำเร็จ</h2>
+        <div class="achievements-grid">
+            <div class="achievement-badge" id="firstWorkout">
+                <div class="achievement-icon">🌟</div>
+                <div style="font-size: 12px;">First Step</div>
+            </div>
+            <div class="achievement-badge" id="weekWarrior">
+                <div class="achievement-icon">🗓️</div>
+                <div style="font-size: 12px;">Week Warrior</div>
+            </div>
+            <div class="achievement-badge" id="chestMaster">
+                <div class="achievement-icon">💎</div>
+                <div style="font-size: 12px;">Chest Master</div>
+            </div>
+            <div class="achievement-badge" id="armChampion">
+                <div class="achievement-icon">💪</div>
+                <div style="font-size: 12px;">Arm Champion</div>
+            </div>
+            <div class="achievement-badge" id="coreKing">
+                <div class="achievement-icon">👑</div>
+                <div style="font-size: 12px;">Core King</div>
+            </div>
+            <div class="achievement-badge" id="legendary">
+                <div class="achievement-icon">🔥</div>
+                <div style="font-size: 12px;">Legendary</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Up Modal -->
+    <div class="level-up-modal" id="levelUpModal">
+        <div class="level-up-content">
+            <div class="level-up-title">LEVEL UP!</div>
+            <div class="level-up-message">คุณได้เลื่อนระดับเป็น Level <span id="newLevel">2</span>!</div>
+            <div class="level-up-reward">
+                <div>🎁 รางวัลที่ได้รับ:</div>
+                <div>+10 Stat Points</div>
+                <div>+New Title Unlocked</div>
+            </div>
+            <button class="close-modal" onclick="closeLevelUp()">ยอดเยี่ยม!</button>
+        </div>
+    </div>
+
+    <script>
+        // Workout data for 3 months
+        const workoutPlan = {
+            // Month 1
+            1: {
+                monday: [
+                    { name: "Dumbbell Bench Press", sets: "3x12", weight: "5-7kg", type: "chest", exp: 20 },
+                    { name: "Dumbbell Flyes", sets: "3x12", weight: "3-5kg", type: "chest", exp: 15 },
+                    { name: "Push-ups", sets: "3x15", weight: "Bodyweight", type: "chest", exp: 15 },
+                    { name: "Plank", sets: "3x30s", weight: "Bodyweight", type: "core", exp: 20 },
+                    { name: "Crunches", sets: "3x20", weight: "Bodyweight", type: "core", exp: 15 }
+                ],
+                wednesday: [
+                    { name: "Bicep Curls", sets: "3x12", weight: "3-5kg", type: "arm", exp: 20 },
+                    { name: "Hammer Curls", sets: "3x12", weight: "3-5kg", type: "arm", exp: 15 },
+                    { name: "Tricep Extensions", sets: "3x12", weight: "3-5kg", type: "arm", exp: 20 },
+                    { name: "Russian Twists", sets: "3x20", weight: "3-5kg", type: "core", exp: 20 },
+                    { name: "Leg Raises", sets: "3x15", weight: "Bodyweight", type: "core", exp: 15 }
+                ],
+                friday: [
+                    { name: "Incline Dumbbell Press", sets: "3x12", weight: "5-7kg", type: "chest", exp: 20 },
+                    { name: "Diamond Push-ups", sets: "3x10", weight: "Bodyweight", type: "chest", exp: 20 },
+                    { name: "21s Bicep Curls", sets: "3 sets", weight: "3-5kg", type: "arm", exp: 25 },
+                    { name: "Mountain Climbers", sets: "3x20", weight: "Bodyweight", type: "core", exp: 20 },
+                    { name: "Bicycle Crunches", sets: "3x20", weight: "Bodyweight", type: "core", exp: 15 }
+                ]
+            },
+            // Month 2 - increased intensity
+            2: {
+                monday: [
+                    { name: "Dumbbell Bench Press", sets: "4x10", weight: "7-10kg", type: "chest", exp: 25 },
+                    { name: "Incline Dumbbell Press", sets: "4x10", weight: "7-10kg", type: "chest", exp: 25 },
+                    { name: "Cable Crossover", sets: "3x12", weight: "Resistance Band", type: "chest", exp: 20 },
+                    { name: "Plank to Push-up", sets: "3x12", weight: "Bodyweight", type: "core", exp: 25 },
+                    { name: "Ab Wheel Rollout", sets: "3x10", weight: "Ab Wheel", type: "core", exp: 30 }
+                ],
+                tuesday: [
+                    { name: "Concentration Curls", sets: "4x10", weight: "5-7kg", type: "arm", exp: 25 },
+                    { name: "Preacher Curls", sets: "3x12", weight: "5-7kg", type: "arm", exp: 20 },
+                    { name: "Close-Grip Press", sets: "4x10", weight: "7-10kg", type: "arm", exp: 25 },
+                    { name: "Hanging Knee Raises", sets: "3x12", weight: "Bodyweight", type: "core", exp: 30 }
+                ],
+                thursday: [
+                    { name: "Decline Dumbbell Press", sets: "4x10", weight: "7-10kg", type: "chest", exp: 25 },
+                    { name: "Chest Squeeze Press", sets: "3x12", weight: "5-7kg", type: "chest", exp: 20 },
+                    { name: "V-Ups", sets: "3x15", weight: "Bodyweight", type: "core", exp: 25 },
+                    { name: "Dead Bug", sets: "3x10 each", weight: "Bodyweight", type: "core", exp: 20 }
+                ],
+                friday: [
+                    { name: "Arnold Press", sets: "4x10", weight: "5-7kg", type: "arm", exp: 25 },
+                    { name: "Tricep Dips", sets: "3x12", weight: "Bodyweight", type: "arm", exp: 25 },
+                    { name: "Cable Curls", sets: "3x15", weight: "Resistance Band", type: "arm", exp: 20 },
+                    { name: "Plank Variations", sets: "3x30s each", weight: "Bodyweight", type: "core", exp: 30 },
+                    { name: "Flutter Kicks", sets: "3x20", weight: "Bodyweight", type: "core", exp: 20 }
+                ]
+            },
+            // Month 3 - advanced level
+            3: {
+                monday: [
+                    { name: "Dumbbell Bench Press (Drop Set)", sets: "4x8+drop", weight: "10-12kg", type: "chest", exp: 35 },
+                    { name: "Incline Dumbbell Press", sets: "4x8", weight: "10-12kg", type: "chest", exp: 30 },
+                    { name: "Cable Crossover", sets: "4x12", weight: "Resistance Band", type: "chest", exp: 25 },
+                    { name: "Dragon Flags", sets: "3x8", weight: "Bodyweight", type: "core", exp: 40 },
+                    { name: "Weighted Plank", sets: "3x45s", weight: "5-10kg", type: "core", exp: 35 }
+                ],
+                tuesday: [
+                    { name: "Barbell Curls", sets: "4x8", weight: "7-10kg", type: "arm", exp: 30 },
+                    { name: "Hammer Curls (Drop Set)", sets: "3x10+drop", weight: "7-10kg", type: "arm", exp: 35 },
+                    { name: "Spider Curls", sets: "3x12", weight: "5-7kg", type: "arm", exp: 25 },
+                    { name: "Overhead Extension", sets: "3x10", weight: "7-10kg", type: "arm", exp: 30 },
+                    { name: "L-Sit Hold", sets: "3x20s", weight: "Bodyweight", type: "core", exp: 40 }
+                ],
+                wednesday: [
+                    { name: "Weighted Push-ups", sets: "4x12", weight: "5-10kg", type: "chest", exp: 35 },
+                    { name: "Dumbbell Pullover", sets: "3x12", weight: "7-10kg", type: "chest", exp: 25 },
+                    { name: "Ab Rollout (Advanced)", sets: "4x12", weight: "Ab Wheel", type: "core", exp: 40 },
+                    { name: "Hanging Leg Raises", sets: "3x12", weight: "Bodyweight", type: "core", exp: 35 }
+                ],
+                thursday: [
+                    { name: "Close-Grip Press", sets: "4x8", weight: "10-12kg", type: "arm", exp: 30 },
+                    { name: "21s Tricep Extension", sets: "3 sets", weight: "5-7kg", type: "arm", exp: 35 },
+                    { name: "Cable Kickbacks", sets: "3x15", weight: "Resistance Band", type: "arm", exp: 25 },
+                    { name: "Windshield Wipers", sets: "3x10 each", weight: "Bodyweight", type: "core", exp: 40 }
+                ],
+                friday: [
+                    { name: "Chest Super Set", sets: "4x10", weight: "8-10kg", type: "chest", exp: 40 },
+                    { name: "Arm Super Set", sets: "4x10", weight: "7-10kg", type: "arm", exp: 40 },
+                    { name: "Core Circuit", sets: "3 rounds", weight: "Mixed", type: "core", exp: 45 },
+                    { name: "Finisher: Burpees", sets: "3x10", weight: "Bodyweight", type: "full", exp: 30 }
+                ]
+            }
+        };
+
+        // Game state
+        let gameState = {
+            level: 1,
+            exp: 0,
+            stats: {
+                chest: 0,
+                core: 0,
+                arm: 0
+            },
+            completedExercises: {},
+            achievements: [],
+            currentMonth: 1,
+            currentDay: 1
+        };
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('fitnessRPG');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        // Save game state to localStorage
+        function saveGameState() {
+            localStorage.setItem('fitnessRPG', JSON.stringify(gameState));
+        }
+
+        // Initialize game
+        function initGame() {
+            loadGameState();
+            updateDate();
+            loadTodayExercises();
+            updateStats();
+            updateProgress();
+            checkAchievements();
+        }
+
+        // Update current date display
+        function updateDate() {
+            const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+            const months = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
+                           'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            
+            const now = new Date();
+            const dayName = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear() + 543; // Buddhist year
+            
+            document.getElementById('dateDisplay').textContent = `${dayName}ที่ ${date} ${month} ${year}`;
+        }
+
+        // Get current workout day
+        function getCurrentWorkoutDay() {
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const dayMap = {
+                1: 'monday',
+                3: 'wednesday',
+                5: 'friday'
+            };
+            
+            // For month 2 and 3, add more days
+            if (gameState.currentMonth >= 2) {
+                dayMap[2] = 'tuesday';
+                dayMap[4] = 'thursday';
+            }
+            
+            return dayMap[dayOfWeek] || null;
+        }
+
+        // Load today's exercises
+        function loadTodayExercises() {
+            const exerciseList = document.getElementById('exerciseList');
+            const workoutDay = getCurrentWorkoutDay();
+            
+            exerciseList.innerHTML = '';
+            
+            if (!workoutDay) {
+                exerciseList.innerHTML = `
+                    <div class="rest-day">
+                        <div class="rest-day-icon">😴</div>
+                        <div class="rest-day-text">วันพักผ่อน</div>
+                        <div style="color: #a0a0a0;">ร่างกายต้องการการพักฟื้น เพื่อการเติบโตของกล้ามเนื้อ</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const todayExercises = workoutPlan[gameState.currentMonth][workoutDay] || [];
+            const dateKey = new Date().toDateString();
+            
+            todayExercises.forEach((exercise, index) => {
+                const exerciseKey = `${dateKey}-${index}`;
+                const isCompleted = gameState.completedExercises[exerciseKey] || false;
+                
+                const exerciseItem = document.createElement('div');
+                exerciseItem.className = `exercise-item ${isCompleted ? 'completed' : ''}`;
+                exerciseItem.innerHTML = `
+                    <div class="exercise-checkbox"></div>
+                    <div class="exercise-info">
+                        <div class="exercise-name">${exercise.name}</div>
+                        <div class="exercise-details">
+                            <span>🔢 ${exercise.sets}</span>
+                            <span>⚖️ ${exercise.weight}</span>
+                            <span>🎯 ${exercise.type}</span>
+                        </div>
+                    </div>
+                    <div class="exercise-exp">+${exercise.exp} EXP</div>
+                `;
+                
+                exerciseItem.onclick = () => toggleExercise(exerciseKey, exercise);
+                exerciseList.appendChild(exerciseItem);
+            });
+        }
+
+        // Toggle exercise completion
+        function toggleExercise(exerciseKey, exercise) {
+            const isCompleted = gameState.completedExercises[exerciseKey] || false;
+            
+            if (!isCompleted) {
+                // Mark as completed
+                gameState.completedExercises[exerciseKey] = true;
+                
+                // Add experience
+                addExperience(exercise.exp);
+                
+                // Add stats based on exercise type
+                if (exercise.type === 'chest') {
+                    gameState.stats.chest += 2;
+                } else if (exercise.type === 'core') {
+                    gameState.stats.core += 2;
+                } else if (exercise.type === 'arm') {
+                    gameState.stats.arm += 2;
+                } else if (exercise.type === 'full') {
+                    gameState.stats.chest += 1;
+                    gameState.stats.core += 1;
+                    gameState.stats.arm += 1;
+                }
+                
+                // Save and update
+                saveGameState();
+                loadTodayExercises();
+                updateStats();
+                updateProgress();
+                checkAchievements();
+            }
+        }
+
+        // Add experience and check for level up
+        function addExperience(exp) {
+            gameState.exp += exp;
+            const expNeeded = gameState.level * 100;
+            
+            if (gameState.exp >= expNeeded) {
+                // Level up!
+                gameState.exp -= expNeeded;
+                gameState.level++;
+                showLevelUpModal();
+            }
+            
+            updateStats();
+        }
+
+        // Show level up modal
+        function showLevelUpModal() {
+            document.getElementById('newLevel').textContent = gameState.level;
+            document.getElementById('levelUpModal').style.display = 'flex';
+        }
+
+        // Close level up modal
+        function closeLevelUp() {
+            document.getElementById('levelUpModal').style.display = 'none';
+        }
+
+        // Update character stats display
+        function updateStats() {
+            // Update level
+            document.getElementById('levelBadge').textContent = gameState.level;
+            
+            // Update EXP
+            const maxExp = gameState.level * 100;
+            document.getElementById('currentExp').textContent = gameState.exp;
+            document.getElementById('maxExp').textContent = maxExp;
+            
+            // Update stat bars
+            const maxStat = 100;
+            
+            // Chest
+            const chestPercent = Math.min((gameState.stats.chest / maxStat) * 100, 100);
+            document.getElementById('chestBar').style.width = `${chestPercent}%`;
+            document.getElementById('chestStat').textContent = `${gameState.stats.chest}/${maxStat}`;
+            
+            // Core
+            const corePercent = Math.min((gameState.stats.core / maxStat) * 100, 100);
+            document.getElementById('coreBar').style.width = `${corePercent}%`;
+            document.getElementById('coreStat').textContent = `${gameState.stats.core}/${maxStat}`;
+            
+            // Arm
+            const armPercent = Math.min((gameState.stats.arm / maxStat) * 100, 100);
+            document.getElementById('armBar').style.width = `${armPercent}%`;
+            document.getElementById('armStat').textContent = `${gameState.stats.arm}/${maxStat}`;
+            
+            // Total
+            const totalStats = gameState.stats.chest + gameState.stats.core + gameState.stats.arm;
+            const totalPercent = Math.min((totalStats / (maxStat * 3)) * 100, 100);
+            document.getElementById('totalBar').style.width = `${totalPercent}%`;
+            document.getElementById('totalStat').textContent = `${totalStats}/${maxStat * 3}`;
+        }
+
+        // Update progress percentages
+        function updateProgress() {
+            // Calculate total exercises for each muscle group
+            const totalExercises = {
+                chest: 0,
+                core: 0,
+                arm: 0
+            };
+            
+            const completedExercises = {
+                chest: 0,
+                core: 0,
+                arm: 0
+            };
+            
+            // Count all exercises in the current month
+            for (let month = 1; month <= gameState.currentMonth; month++) {
+                Object.values(workoutPlan[month]).forEach(dayExercises => {
+                    dayExercises.forEach(exercise => {
+                        if (exercise.type in totalExercises) {
+                            totalExercises[exercise.type]++;
+                        }
+                    });
+                });
+            }
+            
+            // Count completed exercises
+            Object.keys(gameState.completedExercises).forEach(key => {
+                if (gameState.completedExercises[key]) {
+                    // Extract exercise info from the key pattern
+                    const exercises = Object.values(workoutPlan).flatMap(month => 
+                        Object.values(month).flat()
+                    );
+                    
+                    exercises.forEach(exercise => {
+                        if (exercise.type in completedExercises) {
+                            completedExercises[exercise.type] += 0.1; // Approximate count
+                        }
+                    });
+                }
+            });
+            
+            // Update progress displays
+            const chestProgress = totalExercises.chest > 0 ? 
+                Math.round((gameState.stats.chest / 100) * 100) : 0;
+            const coreProgress = totalExercises.core > 0 ? 
+                Math.round((gameState.stats.core / 100) * 100) : 0;
+            const armProgress = totalExercises.arm > 0 ? 
+                Math.round((gameState.stats.arm / 100) * 100) : 0;
+            const totalProgress = Math.round(((gameState.stats.chest + gameState.stats.core + gameState.stats.arm) / 300) * 100);
+            
+            document.getElementById('chestProgress').textContent = `${chestProgress}%`;
+            document.getElementById('coreProgress').textContent = `${coreProgress}%`;
+            document.getElementById('armProgress').textContent = `${armProgress}%`;
+            document.getElementById('totalProgress').textContent = `${totalProgress}%`;
+        }
+
+        // Check and unlock achievements
+        function checkAchievements() {
+            const achievements = {
+                firstWorkout: Object.keys(gameState.completedExercises).length >= 1,
+                weekWarrior: Object.keys(gameState.completedExercises).length >= 15,
+                chestMaster: gameState.stats.chest >= 50,
+                armChampion: gameState.stats.arm >= 50,
+                coreKing: gameState.stats.core >= 50,
+                legendary: gameState.level >= 10
+            };
+            
+            Object.keys(achievements).forEach(achievementId => {
+                if (achievements[achievementId] && !gameState.achievements.includes(achievementId)) {
+                    gameState.achievements.push(achievementId);
+                    document.getElementById(achievementId).classList.add('unlocked');
+                }
+            });
+            
+            saveGameState();
+        }
+
+        // Initialize the game when page loads
+        window.onload = initGame;
+        
+        // Update date every minute
+        setInterval(updateDate, 60000);
+    </script>
+</body>
+</html>
